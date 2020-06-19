@@ -1,59 +1,48 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
+import React, { useState, useContext } from "react";
+import TmdbContext from "../../context/tmdb/tmdbContext";
+import AlertContext from "../../context/alert/alertContext";
 
-class Search extends Component {
-  state = {
-    text: "",
-  };
+const Search = () => {
+  const tmdbContext = useContext(TmdbContext);
+  const alertContext = useContext(AlertContext);
 
-  static propTypes = {
-    searchMovies: PropTypes.func.isRequired,
-    clearMovies: PropTypes.func.isRequired,
-    showClear: PropTypes.bool.isRequired,
-    setAlert: PropTypes.func.isRequired,
-  };
+  const [text, setText] = useState("");
 
-  onSubmit = (e) => {
+  const onSubmit = (e) => {
     e.preventDefault();
-    if (this.state.text === "") {
-      this.props.setAlert("Ju lutem shkruani nje titull filmi", "danger");
+    if (text === "") {
+      alertContext.setAlert("Ju lutem shkruani nje titull filmi", "danger");
     } else {
-      this.props.searchMovies(this.state.text);
-      this.setState({ text: "" });
+      tmdbContext.searchMovies(text);
+      setText("");
     }
   };
 
-  onChange = (e) => {
-    this.setState({ text: e.target.value });
+  const onChange = (e) => {
+    setText(e.target.value);
   };
-  render() {
-    return (
-      <div>
-        <form onSubmit={this.onSubmit} className="form">
-          <input
-            type="text"
-            name="text"
-            placeholder="Kerko Filmin..."
-            value={this.state.text}
-            onChange={this.onChange}
-          />
-          <input
-            type="submit"
-            value="Kerko"
-            className="btn btn-dark btn-block"
-          />
-        </form>
-        {this.props.showClear && (
-          <button
-            className="btn btn-light btn-block"
-            onClick={this.props.clearMovies}
-          >
-            Fshij rezultatet
-          </button>
-        )}
-      </div>
-    );
-  }
-}
+  return (
+    <div>
+      <form onSubmit={onSubmit} className="form">
+        <input
+          type="text"
+          name="text"
+          placeholder="Kerko Filmin..."
+          value={text}
+          onChange={onChange}
+        />
+        <input type="submit" value="Kerko" className="btn btn-dark btn-block" />
+      </form>
+      {tmdbContext.movies.length > 0 && (
+        <button
+          className="btn btn-light btn-block"
+          onClick={tmdbContext.clearMovies}
+        >
+          Fshij rezultatet
+        </button>
+      )}
+    </div>
+  );
+};
 
 export default Search;

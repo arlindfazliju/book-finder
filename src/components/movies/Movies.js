@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import MovieItem from "./MovieItem";
 import Spinner from "../layout/Spinner";
-import PropTypes from "prop-types";
+import TmdbContext from "../../context/tmdb/tmdbContext";
 
-const Movies = ({ movies, loading }) => {
+const Movies = () => {
+  const tmdbContext = useContext(TmdbContext);
+
+  const { loading, movies } = tmdbContext;
+
   if (loading) {
     return <Spinner />;
   } else {
@@ -15,11 +19,6 @@ const Movies = ({ movies, loading }) => {
       </div>
     );
   }
-};
-
-Movies.propTypes = {
-  movies: PropTypes.array.isRequired,
-  loading: PropTypes.bool.isRequired,
 };
 
 export default Movies;
